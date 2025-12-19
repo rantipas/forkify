@@ -1,6 +1,6 @@
 import { async } from 'regenerator-runtime';
 import 'regenerator-runtime/runtime'; // Support older browsers
-import { API_URL, RES_PER_PAGE, KEY } from './config';
+import { API_URL, RES_PER_PAGE, API_KEY } from './config'; // ✅ Use API_KEY
 import { getJSON } from './helpers';
 
 // Global state object
@@ -15,14 +15,11 @@ export const state = {
   bookmarks: [],
 };
 
-// Load a specific recipe by ID
+// Load a single recipe
 export const loadRecipe = async function (id) {
   try {
-    // API v2 requires the key as a query param
-    const data = await getJSON(`${API_URL}${id}?key=${KEY}`);
-    const { recipe } = data.data; // v2 wraps recipe inside data
-
-    // Transform API fields to app state format
+    const data = await getJSON(`${API_URL}/${id}?key=${API_KEY}`);
+    const { recipe } = data.data;
     state.recipe = {
       id: recipe.id,
       title: recipe.title,
@@ -33,11 +30,7 @@ export const loadRecipe = async function (id) {
       cookingTime: recipe.cooking_time,
       ingredients: recipe.ingredients,
     };
-
-    // Check if this recipe is bookmarked
     state.recipe.bookmarked = state.bookmarks.some(b => b.id === id);
-
-    // Reset search page
     state.search.page = 1;
   } catch (err) {
     console.error(`${err} 💥💥💥`);
@@ -45,23 +38,18 @@ export const loadRecipe = async function (id) {
   }
 };
 
-// Load search results for a query
+// Load search results
 export const loadSearchResults = async function (query) {
   try {
     state.search.query = query;
-
-    // API v2 search URL with key
-    const data = await getJSON(`${API_URL}?search=${query}&key=${KEY}`);
-
-    // Map API results to app state format
+    const data = await getJSON(`${API_URL}?search=${query}&key=${API_KEY}`);
     state.search.results = data.data.recipes.map(rec => ({
       id: rec.id,
       title: rec.title,
       publisher: rec.publisher,
       image: rec.image_url,
     }));
-
-    state.search.page = 1; // Reset to first page
+    state.search.page = 1;
   } catch (err) {
     console.error(`${err} 💥💥💥`);
     throw err;
