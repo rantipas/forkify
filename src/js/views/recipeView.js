@@ -2,7 +2,6 @@ import View from './View';
 //this will import the icons in dist folder and change in render part with
 // ${icons}
 import icons from 'url:../../img/icons.svg'; //Parcel 2
-import { Fraction } from 'fractional';
 import fracty from 'fracty';
 
 class RecipeView extends View {
