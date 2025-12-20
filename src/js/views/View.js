@@ -1,4 +1,5 @@
 import icons from 'url:../../img/icons.svg'; //Parcel 2
+import { Fraction } from 'fractional'; // fixes the error in azure web app without displaying the search results
 
 export default class View {
   _data;
